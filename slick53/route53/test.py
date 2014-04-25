@@ -49,6 +49,18 @@ class TestRoute53(unittest.TestCase):
                           set([u'10 mail1.example.com.', '20 mail2.example.com.']))
         self.assertEquals(record.ttl, u'50')
 
+    def test_txt(self):
+        self.zone.add_txt('example.com', '"bladebtah"', 200)
+        record = self.zone.get_txt('example.com')
+        self.assertEquals(record.name, u'example.com.')
+        self.assertEquals(record.resource_records, [u'"bladebtah"'])
+        self.assertEquals(record.ttl, u'200')
+        self.zone.update_txt('example.com', '"eggnogg"', 45)
+        record = self.zone.get_txt('example.com')
+        self.assertEquals(record.name, u'example.com.')
+        self.assertEquals(record.resource_records, [u'"eggnogg"'])
+        self.assertEquals(record.ttl, u'45')
+
     def test_get_records(self):
         records = self.zone.get_records()
         
@@ -60,6 +72,7 @@ class TestRoute53(unittest.TestCase):
         self.zone.delete_a('example.com')
         self.zone.delete_cname('www.example.com')
         self.zone.delete_mx()
+        self.zone.delete_txt('example.com')
         self.zone.delete()
 
 if __name__ == '__main__':
